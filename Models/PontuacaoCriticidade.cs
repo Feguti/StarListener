@@ -1,0 +1,14 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace STARListener.Models
+{
+    public class PontuacaoCriticidade
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Nivel { get; set; } // Nível 0, 1, 2...
+
+        public int Pontos { get; set; }
+    }
+}

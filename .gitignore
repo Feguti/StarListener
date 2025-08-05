@@ -1,0 +1,17 @@
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+**/[Bb]in/
+**/[Oo]bj/
+
+project.lock.json
+project.assets.json
+*.nuget.props
+*.nuget.targets
+
+*.log
+*.mdf
+*.ldf
+appsettings.Development.json
