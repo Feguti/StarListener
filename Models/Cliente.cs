@@ -4,10 +4,10 @@ namespace STARListener.Models
 {
     public class Cliente
     {
-        [Key] // Isso indica que a propriedade Id é a chave primária da tabela
+        [Key] 
         public int Id { get; set; }
 
-        [Required] // Isso indica que o nome não pode ser nulo ou vazio
+        [Required] 
         public string Nome { get; set; }
 
         public int NivelPrioridade { get; set; }
