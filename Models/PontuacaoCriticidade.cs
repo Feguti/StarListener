@@ -9,6 +9,6 @@ namespace STARListener.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Nivel { get; set; } // Nível 0, 1, 2...
 
-        public int Pontos { get; set; }
+        public int Pontos { get; set; }// Pontos 10, 9, 8...
     }
 }
