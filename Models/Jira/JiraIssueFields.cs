@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using STARListener.Converters;
+using System.Text.Json.Serialization;
 
 namespace STARListener.Models.Jira
 {
@@ -11,10 +12,14 @@ namespace STARListener.Models.Jira
         public JiraPriority Priority { get; set; }
 
         [JsonPropertyName("customfield_10043")]
-        public JiraCustomFieldCliente Cliente { get; set; }
+        public JiraCustomFieldCliente ? Cliente { get; set; }
 
         [JsonPropertyName("assignee")]
-        public JiraCustomFieldResponsavel Responsavel { get; set; }
+        public JiraCustomFieldResponsavel ? Responsavel { get; set; }
+
+        [JsonPropertyName("created")]
+        [JsonConverter(typeof(JiraDateTimeConverter))]
+        public DateTime Created { get; set; }
 
     }
 
