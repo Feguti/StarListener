@@ -15,10 +15,10 @@ namespace STARListener.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<IssuePriorizada>> CalcularPrioridadesAsync()
+        public async Task<IEnumerable<IssuePriorizada>> CalcularPrioridadesAsync(string responsavel = null)
         {
-            
-            var issuesDoJira = await _jiraService.GetIssuesAsync();
+
+            var issuesDoJira = await _jiraService.GetIssuesAsync(responsavel);
             var clientesDb = await _context.Clientes.ToListAsync();
             var pontuacoesPrioridade = await _context.PontuacoesPrioridade.ToDictionaryAsync(p => p.Nivel, p => p.Pontos);
             var pontuacoesCriticidade = await _context.PontuacoesCriticidade.ToDictionaryAsync(p => p.Nivel, p => p.Pontos);
@@ -41,9 +41,12 @@ namespace STARListener.Services
 
             };
 
+            var regrasData = await _context.PontuacoesData.OrderByDescending(r => r.Pontos).ToListAsync();
+            var hoje = DateTime.UtcNow.Date;
+
             var listaPriorizada = new List<IssuePriorizada>();
 
-            //Vê todas as issues do projeto (Ainda falta criar a parametrização pra filtrar por responsável)
+            //Vê todas as issues do projeto
             foreach (var issue in issuesDoJira)
             {
                 var nomeCliente = issue.Fields.Cliente?.Value;
@@ -64,18 +67,25 @@ namespace STARListener.Services
 
                 pontosUrgenciaJira.TryGetValue(issue.Fields.Priority.Name, out int pontosUrgencia);
 
+                var idadeEmDias = (int)(hoje - issue.Fields.Created.Date).TotalDays;
+
+                var regraDataFiltro = regrasData.FirstOrDefault(r =>idadeEmDias >= r.DeDiasAtras && idadeEmDias <= r.AteDiasAtras);
+
+                int pontosData = regraDataFiltro?.Pontos ?? 0;
+
                 // Monta o objeto de resposta final
                 var issuePriorizada = new IssuePriorizada
                 {
                     Chave = issue.Key,
                     Resumo = issue.Fields.Summary,
-                    NomeCliente = nomeCliente ?? "N/A",
+                    NomeCliente = nomeCliente ?? "Cliente não definido",
                     UrgenciaJira = issue.Fields.Priority.Name,
-                    Responsavel = issue.Fields.Responsavel.DisplayName,
+                    Responsavel = issue.Fields.Responsavel?.DisplayName ?? "Responsável não definido",
                     PontosPrioridade = pontosPrioridade,
                     PontosCriticidade = pontosCriticidade,
                     PontosUrgencia = pontosUrgencia,
-                    PrioridadeCalculada = (pontosPrioridade +  pontosCriticidade) + pontosUrgencia
+                    PontosData = pontosData,
+                    PrioridadeCalculada = (pontosPrioridade +  pontosCriticidade) + (pontosUrgencia + pontosData)
                 };
 
                 listaPriorizada.Add(issuePriorizada);

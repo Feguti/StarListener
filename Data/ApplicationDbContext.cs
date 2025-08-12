@@ -13,5 +13,6 @@ namespace STARListener.Api.Data
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<PontuacaoPrioridade> PontuacoesPrioridade { get; set; }
         public DbSet<PontuacaoCriticidade> PontuacoesCriticidade { get; set; }
+        public DbSet<PontuacaoData> PontuacoesData { get; set; } 
     }
 }

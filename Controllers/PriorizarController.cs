@@ -16,9 +16,9 @@ namespace STARListener.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListaPriorizada()
+        public async Task<IActionResult> GetListaPriorizada([FromQuery] string responsavel = null)
         {
-            var listaFinal = await _priorizacaoService.CalcularPrioridadesAsync();
+            var listaFinal = await _priorizacaoService.CalcularPrioridadesAsync(responsavel);
             return Ok(listaFinal);
         }
 
